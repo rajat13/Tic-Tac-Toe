@@ -1,4 +1,4 @@
-package entity;
+package org.creditshelf.tictactoe.entity;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 @Cacheable
-public class User {
+public class Player {
 	
 	@Id
 	@Column(name = "EMAIL", nullable = false)
@@ -24,19 +24,19 @@ public class User {
 		return name;
 	}
 	
-	public User(String email, String name) {
+	public Player(String email, String name) {
 		super();
 		this.email = email;
 		this.name = name;
 	}
 
-	public User() {
+	public Player() {
 		super();
 	}
 
 	@Override
 	public String toString() {
-		return "User [email=" + email + ", name=" + name + "]";
+		return "Player [email=" + email + ", name=" + name + "]";
 	}
 
 }

@@ -28,23 +28,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>${quarkus.platform.group-id}</groupId>
-				<artifactId>quarkus-camel-bom</artifactId>
-				<version>${quarkus.platform.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-websockets-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-websockets</artifactId>
+			<groupId>org.jboss.logmanager</groupId>
+			<artifactId>log4j2-jboss-logmanager</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
@@ -61,18 +50,6 @@
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-jdbc-mysql</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel.quarkus</groupId>
-			<artifactId>camel-quarkus-gson</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-arc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.quarkus</groupId>
-			<artifactId>quarkus-undertow-websockets</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.quarkus</groupId>
@@ -111,45 +88,10 @@
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<maven.home>${maven.home}</maven.home>
+						<quarkus.log.level>DEBUG</quarkus.log.level>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	<profiles>
-		<profile>
-			<id>native</id>
-			<activation>
-				<property>
-					<name>native</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>${surefire-plugin.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>integration-test</goal>
-									<goal>verify</goal>
-								</goals>
-								<configuration>
-									<systemPropertyVariables>
-										<native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-										<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-										<maven.home>${maven.home}</maven.home>
-									</systemPropertyVariables>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-			<properties>
-				<quarkus.package.type>native</quarkus.package.type>
-			</properties>
-		</profile>
-	</profiles>
 </project>
