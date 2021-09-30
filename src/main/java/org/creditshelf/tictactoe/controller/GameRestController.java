@@ -12,6 +12,9 @@ import javax.ws.rs.core.MediaType;
 import org.creditshelf.tictactoe.entity.Game;
 import org.creditshelf.tictactoe.entity.Move;
 import org.creditshelf.tictactoe.entity.Player;
+import org.creditshelf.tictactoe.exception.GameDoesNotExistException;
+import org.creditshelf.tictactoe.exception.IllegalMoveException;
+import org.creditshelf.tictactoe.exception.InvalidGameJoinRequestException;
 import org.creditshelf.tictactoe.service.GameService;
 import org.jboss.logging.Logger;
 
@@ -36,7 +39,7 @@ public class GameRestController {
 
 	@POST
 	@Path("/join/{GameId}")
-	public Game joinGame(@PathParam("GameId") Long gameId, Player player) {
+	public Game joinGame(@PathParam("GameId") Long gameId, Player player) throws InvalidGameJoinRequestException, GameDoesNotExistException {
 		LOG.info(String.format("Game Join request by Player : %s for Game Id : %s", player.getEmail(), gameId));
 		Game game = gameService.joinGame(gameId, player);
 		LOG.info(String.format("Player : %s successfully joined the game %s", player.getEmail(), gameId));
@@ -46,7 +49,7 @@ public class GameRestController {
 
 	@POST
 	@Path("/play")
-	public Game playMove(Move move) {
+	public Game playMove(Move move) throws GameDoesNotExistException, IllegalMoveException {
 		LOG.info(String.format("Move %s initiated", move.toString()));
 		Game game = gameService.playMove(move);
 		return game;
@@ -54,7 +57,7 @@ public class GameRestController {
 
 	@GET
 	@Path("/{gameId}")
-	public Game getGame(@PathParam("gameId") Long gameId) {
+	public Game getGame(@PathParam("gameId") Long gameId) throws GameDoesNotExistException {
 		LOG.info(String.format("Get Game : %s", gameId));
 		Game game = gameService.getGame(gameId);
 		return game;

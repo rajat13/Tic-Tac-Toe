@@ -6,7 +6,7 @@ import javax.ws.rs.ext.Provider;
 
 
 @Provider
-public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+public class IllegalMoveExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
 	@Override
 	public Response toResponse(IllegalArgumentException exception) {

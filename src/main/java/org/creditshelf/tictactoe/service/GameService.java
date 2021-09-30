@@ -7,6 +7,9 @@ import org.creditshelf.tictactoe.dao.GameDao;
 import org.creditshelf.tictactoe.entity.Game;
 import org.creditshelf.tictactoe.entity.Move;
 import org.creditshelf.tictactoe.entity.Player;
+import org.creditshelf.tictactoe.exception.GameDoesNotExistException;
+import org.creditshelf.tictactoe.exception.IllegalMoveException;
+import org.creditshelf.tictactoe.exception.InvalidGameJoinRequestException;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -20,12 +23,16 @@ public class GameService {
 	@Inject
 	PlayerService playerService;
 	
-	public Game getGame(Long gameId) {
+	public Game getGame(Long gameId) throws GameDoesNotExistException {
 		LOG.debug(String.format("fetching Game with gameId: %s", gameId));
-		return gameDao.getGame(gameId);
+		Game game = gameDao.getGame(gameId);
+		if(game==null) {
+			throw new GameDoesNotExistException(String.format("Game with id: %s does not exist", gameId));
+		}
+		return game;
 	}
 
-	public Game playMove(Move move) {
+	public Game playMove(Move move) throws GameDoesNotExistException, IllegalMoveException {
 		LOG.debug(String.format("New Move with GameId: %s PlayerId: %s X: %s Y %s Symbol %s", move.getGameid(), move.getPlayer(), move.getX(), move.getY(), move.getSymbol()));
 		Game game = gameDao.getGame(move.getGameid());
 		validateMove(game,move);
@@ -47,22 +54,22 @@ public class GameService {
 		return game;
 	}
 
-	public Game joinGame(Long gameId, Player user) {
+	public Game joinGame(Long gameId, Player user) throws InvalidGameJoinRequestException, GameDoesNotExistException {
 		LOG.debug(String.format("Joining Game with Secondary Player: %s and Game Id: %s", user.getEmail(), gameId));
 
 		Game game = gameDao.getGame(gameId);
 		
 		if (game == null) {
-			throw new IllegalArgumentException("Game Does not Exist");
+			throw new GameDoesNotExistException("Game Does not Exist");
 		}
 
 		String primaryplayer = game.getPrimaryplayer();
 		if (primaryplayer.contentEquals(user.getEmail())) {
-			throw new IllegalArgumentException("Primary Player is same as Secondary Player");
+			throw new InvalidGameJoinRequestException("Primary Player is same as Secondary Player");
 		}
 		String secondaryPlayer = game.getSecondaryPlayer();
 		if (secondaryPlayer != null && !secondaryPlayer.contentEquals(user.getEmail())) {
-			throw new IllegalArgumentException("Both Players are already assigned");
+			throw new InvalidGameJoinRequestException("Both Players are already assigned");
 		}
 
 		if (secondaryPlayer != null && secondaryPlayer.contentEquals(user.getEmail())) {
@@ -78,21 +85,21 @@ public class GameService {
 	}
 
 
-	private void validateMove(Game game, Move move) {
+	private void validateMove(Game game, Move move) throws GameDoesNotExistException, IllegalMoveException {
 		if (game == null) {
-			throw new IllegalArgumentException("Game Does not Exist");
+			throw new GameDoesNotExistException("Game Does not Exist");
 		}
 		if(game.getStatus()!=GameStatus.IN_PROGRESS) {
-			throw new IllegalArgumentException(String.format("Game Status is %s", game.getStatus(), GameStatus.IN_PROGRESS));
+			throw new IllegalMoveException(String.format("Game Status is %s", game.getStatus(), GameStatus.IN_PROGRESS));
 		}
 		if(move.getX()<0||move.getY()<0||move.getX()>=Game.BOARD_SIZE||move.getY()>=Game.BOARD_SIZE) {
-			throw new IllegalArgumentException(String.format("Move Coordinates Out of bounds X : %s, Y :%s", move.getX(), move.getY()));	
+			throw new IllegalMoveException(String.format("Move Coordinates Out of bounds X : %s, Y :%s", move.getX(), move.getY()));	
 		}
 		if(move.getSymbol()!=Game.SymbolX&&move.getSymbol()!=Game.SymbolO) {
-			throw new IllegalArgumentException(String.format("Illegal Symbol %s must be %s or %s", move.getSymbol(), Game.SymbolO, Game.SymbolX));			
+			throw new IllegalMoveException(String.format("Illegal Symbol %s must be %s or %s", move.getSymbol(), Game.SymbolO, Game.SymbolX));			
 		}
 		if(!move.getPlayer().contentEquals(game.getTurn())) {
-			throw new IllegalArgumentException(String.format("Next Turn must be %s", game.getTurn()));
+			throw new IllegalMoveException(String.format("Next Turn must be %s", game.getTurn()));
 		}
 	}
 
@@ -168,11 +175,11 @@ public class GameService {
 		return true;
 	}
 
-	private void makeMove(Game game, Move move) {
+	private void makeMove(Game game, Move move) throws IllegalMoveException {
 		String[] values = game.getBoard().split(",");
 		int index = move.getX() * 3 + move.getY();
 		if(values[index].contentEquals(Integer.toString(game.SymbolO))||values[index].contentEquals(Integer.toString(game.SymbolX))) {
-			throw new IllegalArgumentException("Invalid Move: Position is already occupied");
+			throw new IllegalMoveException("Invalid Move: Position is already occupied");
 		}
 		values[index] = Integer.toString(move.getSymbol());
 		StringBuilder sb = new StringBuilder();
