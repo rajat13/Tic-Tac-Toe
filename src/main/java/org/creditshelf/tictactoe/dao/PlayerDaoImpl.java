@@ -3,6 +3,7 @@ package org.creditshelf.tictactoe.dao;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 
 import org.creditshelf.tictactoe.entity.Player;

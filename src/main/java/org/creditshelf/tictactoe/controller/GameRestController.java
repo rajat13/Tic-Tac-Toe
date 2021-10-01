@@ -30,7 +30,7 @@ public class GameRestController {
 
 	@POST
 	@Path("/create")
-	public Game createGame(Player player) {
+	public Game createGame(Player player) throws InvalidGameJoinRequestException {
 		LOG.info(String.format("New Game request by Player : %s", player.getEmail()));
 		Game game =  gameService.createGame(player);
 		LOG.info(String.format("Game %s created Successfully, primary player : %s", game.getGameId(), player.getEmail()));
@@ -44,7 +44,6 @@ public class GameRestController {
 		Game game = gameService.joinGame(gameId, player);
 		LOG.info(String.format("Player : %s successfully joined the game %s", player.getEmail(), gameId));
 		return game;
-		
 	}
 
 	@POST
