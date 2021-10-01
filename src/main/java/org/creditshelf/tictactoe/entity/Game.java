@@ -38,7 +38,7 @@ public class Game {
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PRIMARY_PLAYER_ID", referencedColumnName = "EMAIL")
-	private Player primaryplayer;
+	private Player primaryPlayer;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "SECONDARY_PLAYER_ID", referencedColumnName = "EMAIL")
@@ -68,24 +68,24 @@ public class Game {
 		return board;
 	}
 
-	public String getPrimaryplayer() {
-		return primaryplayer.getEmail();
+	public Player getPrimaryPlayer() {
+		return primaryPlayer;
 	}
 
-	public String getSecondaryPlayer() {
-		return secondaryPlayer == null ? null : secondaryPlayer.getEmail();
+	public Player getSecondaryPlayer() {
+		return secondaryPlayer;
 	}
 
-	public String getTurn() {
-		return turn.getEmail();
+	public Player getTurn() {
+		return turn;
 	}
 
-	public String getWinner() {
-		return winner == null ? null : winner.getEmail();
+	public Player getWinner() {
+		return winner;
 	}
 
-	public void setPrimaryplayer(Player user) {
-		this.primaryplayer = user;
+	public void setPrimaryPlayer(Player user) {
+		this.primaryPlayer = user;
 	}
 
 	public void setMoveCount(int count) {
@@ -96,7 +96,7 @@ public class Game {
 		this.turn = user;
 	}
 
-	public void setSecondaryplayer(Player user) {
+	public void setSecondaryPlayer(Player user) {
 		this.secondaryPlayer = user;
 	}
 
@@ -121,7 +121,7 @@ public class Game {
 
 	@Override
 	public String toString() {
-		return "Game [gameId=" + gameId + ", status=" + status + ", board=" + board + ", primaryplayer=" + primaryplayer
+		return "Game [gameId=" + gameId + ", status=" + status + ", board=" + board + ", primaryplayer=" + primaryPlayer
 				+ ", secondaryPlayer=" + secondaryPlayer + ", turn=" + turn + ", winner=" + winner + "]";
 	}
 
