@@ -11,8 +11,12 @@ Install Java (>= Version 11)
 
 ### Step 2
 Start a MySQL instance either manually or using the docker-compose.yml file provided.
+
 Update the connection details in src/main/resources/application.properties
+
 If you face port already in use, change port value in application.properties.
+
+Start MySql container with``` docker-compose up```
 ### Step 3
 Run Tests using ```./mvnw test```
 Run Application in Dev Mode using ```./mvnw compile quarkus:dev```
