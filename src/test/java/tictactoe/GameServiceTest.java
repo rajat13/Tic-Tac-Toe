@@ -6,10 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import javax.inject.Inject;
 
@@ -71,7 +68,7 @@ public class GameServiceTest extends AbstractCommonTest{
 		for(int i=0;i<THREAD_COUNT;i++){
 			executorService.submit(new GameRunner(latch));
 		}
-		latch.await();
+		latch.await(1, TimeUnit.MINUTES);
 	}
 
 	class GameRunner implements Runnable {
@@ -156,28 +153,21 @@ public class GameServiceTest extends AbstractCommonTest{
 	@Test
 	public void testGameIsFinished() throws Exception {
 		Game finishedGame = getFinishedGame();
-		Move move = new Move(finishedGame.getGameId(), player1.getEmail(), Game.SymbolO, 0,0);
+		Move move = new Move(finishedGame.getGameId(), player1.getEmail(), 0,0);
 		assertThrows(Exception.class, ()->applyMove(move));
 	}
 	
 	@Test
 	public void testIllegalNextTurn() throws Exception {
 		Game finishedGame = createAndJoinNewGame(player1, player2);
-		Move move = new Move(finishedGame.getGameId(), player2.getEmail(), Game.SymbolO, 0,0);
+		Move move = new Move(finishedGame.getGameId(), player2.getEmail(), 0,0);
 		assertThrows(Exception.class, ()->applyMove(move));
 	}
 
 	@Test
 	public void testIllegalCoordinates() throws Exception {
 		Game finishedGame = createAndJoinNewGame(player1, player2);
-		Move move = new Move(finishedGame.getGameId(), player1.getEmail(), Game.SymbolO, -1,-1);
-		assertThrows(Exception.class, ()->applyMove(move));
-	}
-
-	@Test
-	public void testIllegalSymbol() throws Exception {
-		Game finishedGame = createAndJoinNewGame(player1, player2);
-		Move move = new Move(finishedGame.getGameId(), player1.getEmail(), 3, 0,0);
+		Move move = new Move(finishedGame.getGameId(), player1.getEmail(), -1,-1);
 		assertThrows(Exception.class, ()->applyMove(move));
 	}
 
@@ -203,10 +193,10 @@ public class GameServiceTest extends AbstractCommonTest{
 		Boolean isFirstPlayerTurn = true;
 		for (int[] m : moves) {
 			if (isFirstPlayerTurn) {
-				list.add(new Move(gameId, player1.getEmail(), Game.SymbolX, m[0], m[1]));
+				list.add(new Move(gameId, player1.getEmail(), m[0], m[1]));
 				isFirstPlayerTurn = false;
 			} else {
-				list.add(new Move(gameId, player2.getEmail(), Game.SymbolO, m[0], m[1]));
+				list.add(new Move(gameId, player2.getEmail(), m[0], m[1]));
 				isFirstPlayerTurn = true;
 			}
 		}

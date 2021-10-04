@@ -50,7 +50,7 @@ public class GameService {
 	 * @throws IllegalMoveException
 	 */
 	public Game playMove(Move move) throws GameDoesNotExistException, IllegalMoveException {
-		LOG.debug(String.format("New Move with GameId: %s PlayerId: %s X: %s Y %s Symbol %s", move.getGameid(), move.getPlayer(), move.getX(), move.getY(), move.getSymbol()));
+		LOG.debug(String.format("New Move with GameId: %s PlayerId: %s X: %s Y %s", move.getGameid(), move.getPlayer(), move.getX(), move.getY()));
 
 		Game game = gameDao.getGame(move.getGameid());
 		Player primary = game.getPrimaryPlayer();
