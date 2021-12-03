@@ -27,9 +27,7 @@ public class GameUtils {
         if(move.getX()<0||move.getY()<0||move.getX()>=Game.BOARD_SIZE||move.getY()>=Game.BOARD_SIZE) {
             throw new IllegalMoveException(String.format("Move Coordinates Out of bounds X : %s, Y :%s", move.getX(), move.getY()));
         }
-        if(move.getSymbol()!=Game.SymbolX&&move.getSymbol()!=Game.SymbolO) {
-            throw new IllegalMoveException(String.format("Illegal Symbol %s must be %s or %s", move.getSymbol(), Game.SymbolO, Game.SymbolX));
-        }
+
         if(!move.getPlayer().contentEquals(game.getTurn().getEmail())) {
             throw new IllegalMoveException(String.format("Next Turn must be %s", game.getTurn()));
         }
@@ -47,8 +45,9 @@ public class GameUtils {
         String[] values = game.getBoard().split(",");
         int row = move.getX();
         int col = move.getY();
+        Integer symbol = move.getPlayer().contentEquals(game.getPrimaryPlayer().getEmail())?Game.SymbolX:Game.SymbolO;
 
-        boolean isWinner = isRowCompleted(values, row) || isColumnCompleted(values, col) || isDiagonalCompleted(values, row, col, Integer.toString(move.getSymbol()));
+        boolean isWinner = isRowCompleted(values, row) || isColumnCompleted(values, col) || isDiagonalCompleted(values, row, col, Integer.toString(symbol));
         boolean isDraw = !isWinner && game.getMoveCount() == 9;
 
         if (isWinner) {
@@ -164,7 +163,7 @@ public class GameUtils {
         if(values[index].contentEquals(Integer.toString(game.SymbolO))||values[index].contentEquals(Integer.toString(game.SymbolX))) {
             throw new IllegalMoveException("Invalid Move: Position is already occupied");
         }
-        values[index] = Integer.toString(move.getSymbol());
+        values[index] = move.getPlayer().contentEquals(game.getPrimaryPlayer().getEmail())?Integer.toString(Game.SymbolX):Integer.toString(Game.SymbolO);
         String board = createBoardFromArray(values);
         game.setBoard(board);
         game.setMoveCount(game.getMoveCount() + 1);
