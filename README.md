@@ -1,4 +1,4 @@
-# CreditShelf Backend Challenge - Tic-Tac-Toe Server
+# Scalable Multiplayer Tic-Tac-Toe Server
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
